@@ -1,0 +1,137 @@
+#include <iostream>
+#include <vector>
+#include <conio.h>  
+#include <thread>
+#include <chrono>
+
+#include "titancommunication/hpp/reporter.hpp" 
+
+int main()
+{  
+    
+    TitanReporter reporter;
+
+    if(!reporter.connect()){
+        std::cerr << "Failed to connect to Titan device. Check your USB connection." << std::endl;
+        return 1;
+    }
+
+    std::cout << "Successfully connected to Titan device!" << std::endl;
+
+    std::vector<float> input_values(42, 0.0f);
+
+    input_values[XB::RX] = 100.0f; 
+
+    reporter.send_inputs(input_values);
+    
+    std::cout << "Pushing Right Stick (RX) fully right..." << std::endl;
+    std::cout << "Press [SPACE] or [ENTER] to stop." << std::endl;
+
+    while (true) {
+        if (_kbhit()) {
+            char ch = _getch(); 
+            if (ch == ' ' || ch == '\r' || ch == '\n') {
+                break; 
+            }
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+
+    std::cout << "Stopping inputs and exiting." << std::endl;
+
+    reporter.disconnect();
+
+    return 0;
+}
+
+
+// all this does is set XB::rx. to 100.0f
+
+
+//why use floats? you dont HAVEEEEEEEeeee too. 
+
+
+
+
+
+
+
+// the gpc code:
+
+#define GVC_HOME      0
+#define GVC_VIEW      1
+#define GVC_MENU      2
+#define GVC_RB        3
+#define GVC_RT        4
+#define GVC_RS        5
+#define GVC_LB        6
+#define GVC_LT        7
+#define GVC_LS        8
+#define GVC_UP        9
+#define GVC_DOWN      10
+#define GVC_LEFT      11
+#define GVC_RIGHT     12
+#define GVC_Y         13
+#define GVC_B         14
+#define GVC_A         15
+#define GVC_X         16
+#define GVC_SHARE     17
+#define GVC_SYNC      20
+#define GVC_RX        21
+#define GVC_RY        22
+#define GVC_LX        23
+#define GVC_LY        24
+
+int8  gvc_vals[42];
+uint8 i;
+
+main {
+
+    if (gcv_ready()) {
+        for (i = 0; i < 42; i++) {
+            gcv_read(i, &gvc_vals[i]);
+        }
+    }
+
+    fix32 phys_rx   = get_val(STICK_1_X);
+    fix32 phys_ry   = get_val(STICK_1_Y);
+    fix32 phys_mag  = sqrt(phys_rx * phys_rx + phys_ry * phys_ry);
+
+    #define DEADZONE 20.0
+
+    fix32 ai_rx = clamp((fix32)gvc_vals[GVC_RX], -100.0, 100.0);
+    fix32 ai_ry = clamp((fix32)gvc_vals[GVC_RY], -100.0, 100.0);
+
+    if (phys_mag > DEADZONE) {
+        
+        set_val(STICK_1_X, phys_rx);
+        set_val(STICK_1_Y, phys_ry);
+    } else {
+        
+        set_val(STICK_1_X, ai_rx);
+        set_val(STICK_1_Y, ai_ry);
+    }
+
+    if (gvc_vals[GVC_A] > 5)   set_val(BUTTON_16, (fix32)gvc_vals[GVC_A]);
+    if (gvc_vals[GVC_B] > 5)   set_val(BUTTON_15, (fix32)gvc_vals[GVC_B]);
+    if (gvc_vals[GVC_X] > 5)   set_val(BUTTON_17, (fix32)gvc_vals[GVC_X]);
+    if (gvc_vals[GVC_Y] > 5)   set_val(BUTTON_14, (fix32)gvc_vals[GVC_Y]);
+
+    if (gvc_vals[GVC_LB] > 5)  set_val(BUTTON_6,  100.0);
+    if (gvc_vals[GVC_RB] > 5)  set_val(BUTTON_4,  100.0);
+
+    if (gvc_vals[GVC_LT] > 5)  set_val(BUTTON_7,  clamp((fix32)gvc_vals[GVC_LT], 0.0, 100.0));
+    if (gvc_vals[GVC_RT] > 5)  set_val(BUTTON_5,  clamp((fix32)gvc_vals[GVC_RT], 0.0, 100.0));
+
+    if (gvc_vals[GVC_LS] > 5)  set_val(BUTTON_8,  100.0);
+    if (gvc_vals[GVC_RS] > 5)  set_val(BUTTON_9,  100.0);
+
+    if (gvc_vals[GVC_UP]    > 5)  set_val(BUTTON_10, 100.0);
+    if (gvc_vals[GVC_DOWN]  > 5)  set_val(BUTTON_11, 100.0);
+    if (gvc_vals[GVC_LEFT]  > 5)  set_val(BUTTON_12, 100.0);
+    if (gvc_vals[GVC_RIGHT] > 5)  set_val(BUTTON_13, 100.0);
+
+    if (gvc_vals[GVC_MENU]  > 5)  set_val(BUTTON_3, 100.0);
+    if (gvc_vals[GVC_VIEW]  > 5)  set_val(BUTTON_2, 100.0);
+    if (gvc_vals[GVC_HOME]  > 5)  set_val(BUTTON_1, 100.0);
+}

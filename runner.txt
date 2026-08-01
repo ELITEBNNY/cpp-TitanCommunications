@@ -1,0 +1,31 @@
+g++ main.cpp -o my_program -Llibs -lhidapi        
+-- to run with terminal
+
+
+if you are NEW to cpp and wanting to use this as a way to expand knowledge.
+
+to set it up.
+
+
+
+use vcpkg or find the files for 
+cpp-HIDAPI, and connect the project to this. (maybe ill have a visual studio 2026 version you can just import)
+
+g++ main.cpp -o my_program -Llibs -lhidapi 
+
+what does this mean?
+--__--__--__----__--__--__--
+
+g++ 
+main.cpp (name of the main.cpp file)
+ -o 
+ my_program (exe filename)
+ 
+ -Llibs (libs folder)
+ -lhidapi (libs requirments for the exe)
+
+ --__--__--__----__--__--__--
+
+
+
+thank you for choosing to use this.
