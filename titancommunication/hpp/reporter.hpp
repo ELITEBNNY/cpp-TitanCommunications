@@ -8,7 +8,7 @@
 #include <atomic>
 #include <string>
 #include <cstring>
-#include <C:\Users\tjsda\source\repos\gtunerexternal\vcpkg_installed\x64-windows\include\hidapi\hidapi.h>
+#include <hidapi\hidapi.h>
 //this is the only library required by the titan reporter. you gotta link it urself.
 
 #include "../header/constants.h"
