@@ -1,0 +1,28 @@
+#include <iostream>
+#include <string>
+#include "titancommunication/hpp/reporter.hpp"
+
+int main() {
+    TitanReporter reporter;
+
+    if (!reporter.connect()) {
+        std::cout << "Failed to connect to Titan device. Make sure it is plugged in.\n";
+        return 1;
+    }
+
+    std::cout << "Connected to Titan successfully!\n\n";
+
+    TitanDeviceInfo info = reporter.get_device_info();
+
+    std::cout << "=== Titan Device Information ===\n";
+    std::cout << "Manufacturer:  " << (info.manufacturer.empty() ? "N/A" : info.manufacturer) << "\n";
+    std::cout << "Product:       " << (info.product.empty() ? "N/A" : info.product) << "\n";
+    std::cout << "Serial Number: " << (info.serial_number.empty() ? "N/A" : info.serial_number) << "\n";
+    std::cout << "================================\n";
+
+    reporter.disconnect();
+
+    return 0;
+}
+
+// can use the serial for softwares

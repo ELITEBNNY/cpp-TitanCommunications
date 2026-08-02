@@ -1,0 +1,33 @@
+#include <iostream>
+#include <vector>
+#include <conio.h>  
+#include <thread>
+#include <chrono>
+#include <vector>
+#include "titancommunication/hpp/reporter.hpp" 
+
+int main()
+{  
+    
+    TitanReporter reporter;
+
+    if (!reporter.connect()) {
+        std::cerr << "Failed to connect to Titan device." << std::endl;
+        return 1;
+    }
+
+    auto messages = reporter.read_printf_loop(); 
+    //or
+    std::vector<std::string> messages = reporter.read_printf_loop();
+
+    // this will read the printf from the titan to the console. it will return a comma separated list of all the printf messages that were sent to the titan. you can use this to debug your titan scripts.
+    // it cant read a string with a automated input placement. for example "test:{}", var. it must be a constant string.
+    // when should you use this? only when you need to debug. this is REALLY slow.
+
+    for (const auto& msg : messages) {
+        std::cout << msg << std::endl;
+    }
+
+    return 0;
+}
+// use the gpc code frmo sendainput.txt
